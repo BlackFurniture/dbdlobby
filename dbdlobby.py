@@ -245,7 +245,7 @@ def main():
         rank = get_value('Rank to sort by (lowest, highest, or rank number): ')
     else:
         players = args.players
-        location = locations[location]
+        location = locations[args.location]
         rank = args.rank
 
     invite_loop(players, location, rank)

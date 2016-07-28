@@ -184,21 +184,23 @@ def find_lobby(players, location, rank):
                                                     max_rank,
                                                     near_rank))
         tried.add(lobby.lobby_id)
-        send_lobby_invites(lobby.lobby_id)
+        send_invites(lobby.lobby_id)
         lobby_ret = lobby.lobby_id
 
     print('Lobbies left, total: %s, %s' % (lobby_count, len(lobbies)))
     return lobby_ret
 
+try:
+    get_input = raw_input
+except NameError:
+    get_input = input
+
 def main():
-    if not os.path.isfile(PLAYERS_FILE):
-        print('Missing %r file! Fill it with Steam IDs for players to invite.'
-              % PLAYERS_FILE)
-        return
+
     import argparse
 
     parser = argparse.ArgumentParser(description='Dead by Daylight lobby tool')
-    parser.add_argument('players', type=int,
+    parser.add_argument('--players', type=int, default=1,
                         help='number of slots that needs to be available')
     parser.add_argument('--location', default='close',
                         help='area to search in ("close", "default", "far" '
@@ -206,26 +208,54 @@ def main():
     parser.add_argument('--rank', default='lowest',
                         help='rank to sort by ("lowest", "highest", or a '
                              'number to match a similar rank)')
+    parser.add_argument('--interactive', action='store_true',
+                        help='interactive setup of search')
+    args = parser.parse_args()
+
+    if not os.path.isfile(PLAYERS_FILE):
+        print('Missing %r file! Fill it with Steam IDs for players to invite.'
+              % PLAYERS_FILE)
+        if args.interactive:
+            get_input()
+        return
+    if os.path.getsize(PLAYERS_FILE) == 0:
+        print('Empty %r file! Fill it with Steam IDs for players to invite.'
+              % PLAYERS_FILE)
+        if args.interactive:
+            get_input()
+        return
+
     locations = {
         'close': 0,
         'default': 1,
         'far': 2,
         'near': 3
     }
-    args = parser.parse_args()
-    invite_loop(args.players, locations[args.location], args.rank)
+    if args.interactive:
+        def get_value(text):
+            while True:
+                value = get_input(text)
+                if not value.strip():
+                    continue
+                return value
+
+        players = int(get_value('Player slots needed (1-4): '))
+        location = get_value('Location (close, default, far or near): ')
+        location = locations[location]
+        rank = get_value('Rank to sort by (lowest, highest, or rank number): ')
+    else:
+        players = args.players
+        location = locations[location]
+        rank = args.rank
+
+    invite_loop(players, location, rank)
 
 def invite_loop(*arg, **kw):
-    try:
-        get_input = raw_input
-    except NameError:
-        get_input = input
-
     last_lobby = None
     while True:
         if get_input("Press Enter to find lobby, or 'r' "
                      "to resend last invite: ") == 'r':
-            send_lobby_invites(last_lobby)
+            send_invites(last_lobby)
             continue
         last_lobby = find_lobby(*arg, **kw)
 

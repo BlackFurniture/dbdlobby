@@ -14,13 +14,19 @@ First, fill `players.txt` with Steam IDs for players that you want to invite.
 Then, with either Python 3 or Python 2, run
 
 ```
-python dbdlobby.py 3 --location close --rank lowest
+python dbdlobby.py --players 3 --location close --rank lowest
 ```
 
 to search for lobbies with 3 slots, nearby region, and with the lowest rank
-possible.
+possible. You can also do
 
-If you are running Python 32bit, you will have to place steam_api.dll in the
+```
+python dbdlobby.py --interactive
+```
+
+to make the program ask interactively for parameters.
+
+If you are running Python 32bit, you will have to place `steam_api.dll` in the
 local directory.
 
 ### Why did you create this?

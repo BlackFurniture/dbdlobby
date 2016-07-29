@@ -1,6 +1,6 @@
 # dbdlobby
 
-![Demonstration GIF](http://i.imgur.com/mR75hkp.gif)
+![Demonstration GIF](http://i.imgur.com/Es9CYVe.gif =500x)
 
 Having trouble joining lobbies in Dead by Daylight, especially in
 "survive with friends"? This may be a tool for you.

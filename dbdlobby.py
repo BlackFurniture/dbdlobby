@@ -171,7 +171,7 @@ def find_lobby(players, location, rank):
     lobby_ret = None
     lobby_count = 0
     for lobby in lobbies:
-        if lobby in tried:
+        if lobby.lobby_id in tried:
             continue
         lobby_count += 1
         if lobby_ret:
